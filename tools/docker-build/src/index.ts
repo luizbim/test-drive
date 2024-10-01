@@ -1,6 +1,6 @@
 import { dirname, join } from 'path';
 import { existsSync } from 'fs';
-import { CreateNodes, CreateNodesResult } from '@nrwl/devkit';
+import { CreateNodes, CreateNodesResult } from '@nx/devkit';
 
 export const createNodes: CreateNodes = [
   'apps/**/Dockerfile',
