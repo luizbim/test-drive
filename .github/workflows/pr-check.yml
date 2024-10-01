@@ -1,0 +1,103 @@
+name: PR Check
+
+on: pull_request
+
+jobs:
+  code-check:
+    name: Code Check
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Installing NodeJS
+        uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+          node-version-file: '.nvmrc'
+
+      - name: Asserting the BASE and HEAD to be used in nx affected
+        uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: main
+
+      - name: Cache node modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Installing Nodejs dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Checking formatting
+        run: npx nx format:check --base=origin/main
+
+      - name: Lint the project
+        run: npx nx affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --target=lint --parallel=3
+
+  code-functionality:
+    name: Code Functionality (Unit Tests, Integration Tests, E2E Tests, Build)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Installing NodeJS
+        uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+          node-version-file: '.nvmrc'
+
+      - name: Asserting the BASE and HEAD to be used in nx affected
+        uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: main
+
+      - name: Cache node modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Installing Nodejs dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Unit Tests
+        run: npx nx affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --target=unit-test --parallel=3 --configuration=ci
+
+      - name: Integration Tests
+        run: npx nx affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --target=integration-test --parallel=3 --configuration=ci
+
+      - name: e2e Tests
+        run: npx nx affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --target=e2e --parallel=3 --configuration=ci
+
+      - name: Service Build
+        run: npx nx affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --target=build --parallel=3

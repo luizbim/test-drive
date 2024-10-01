@@ -1,0 +1,58 @@
+name: Auto Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/CHANGELOG.md'
+      - '(apps|libs)/**/package.json'
+
+jobs:
+  nx-release:
+    #avoid duplicate runs when pushing the release commit to main branch
+    if: ${{ !startsWith(github.event.head_commit.message, 'chore(release):') }}
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Installing NodeJS
+        uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+          node-version-file: '.nvmrc'
+
+      - name: Asserting the BASE and HEAD to be used in nx affected
+        uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: main
+
+      - name: Cache node modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Installing Nodejs dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Nx Release
+        run: npx nx release --skip-publish
