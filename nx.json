@@ -1,16 +1,28 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "namedInputs": {
-    "default": [
-      "{projectRoot}/**/*",
-      "sharedGlobals"
-    ],
-    "production": [
-      "default"
-    ],
-    "sharedGlobals": [
-      "{workspaceRoot}/.github/workflows/ci.yml"
-    ]
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "production": ["default"],
+    "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@pellegrims/nx-remotecache-s3",
+      "options": {
+        "cacheableOperations": [
+          "format",
+          "build",
+          "unit-test",
+          "integration-test",
+          "lint",
+          "e2e"
+        ],
+        "bucket": "nx-ci-cache",
+        "prefix": "test-drive/",
+        "region": "eu-west-1",
+        "forcePathStyle": true
+      }
+    }
   },
   "nxCloudAccessToken": "NmYxNWYzM2UtZTdlNC00Njc2LTg2ZDktYjJiOTgwZDZjYTlmfHJlYWQtd3JpdGU="
 }
