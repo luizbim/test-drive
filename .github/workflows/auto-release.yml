@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths-ignore:
-      - "**/CHANGELOG.md"
-      - "(apps|libs)/**/package.json"
+      - '**/CHANGELOG.md'
+      - '(apps|libs)/**/package.json'
 
 jobs:
   nx-release:
@@ -28,9 +28,9 @@ jobs:
       - name: Installing NodeJS
         uses: actions/setup-node@v4
         with:
-          cache: "npm"
+          cache: 'npm'
           cache-dependency-path: package-lock.json
-          node-version-file: ".nvmrc"
+          node-version-file: '.nvmrc'
 
       - name: Asserting the BASE and HEAD to be used in nx affected
         uses: nrwl/nx-set-shas@v4
