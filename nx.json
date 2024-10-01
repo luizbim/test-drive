@@ -34,7 +34,23 @@
     }
   },
   "nxCloudAccessToken": "NmYxNWYzM2UtZTdlNC00Njc2LTg2ZDktYjJiOTgwZDZjYTlmfHJlYWQtd3JpdGU=",
-  "plugins": ["docker-build"],
+  "plugins": [
+    "docker-build",
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview"
+      }
+    },
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "eslint:lint"
+      }
+    }
+  ],
   "targetDefaults": {
     "@nx/js:swc": {
       "cache": true,
