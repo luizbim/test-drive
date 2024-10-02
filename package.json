@@ -40,11 +40,17 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@nestjs/cache-manager": "^2.2.2",
     "@nestjs/common": "^10.0.2",
     "@nestjs/core": "^10.0.2",
     "@nestjs/platform-express": "^10.0.2",
+    "@nestjs/typeorm": "^10.0.2",
     "@nx/devkit": "19.5.1",
     "axios": "^1.6.0",
+    "cache-manager": "^5.7.6",
+    "class-validator": "^0.14.1",
+    "pg": "^8.13.0",
+    "rate-limiter-flexible": "^5.0.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
     "tslib": "^2.3.0"

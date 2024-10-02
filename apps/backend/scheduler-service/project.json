@@ -20,11 +20,18 @@
         }
       }
     },
-    "test": {
+    "unit-test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}/unit"],
       "options": {
-        "jestConfig": "apps/backend/scheduler-service/jest.config.ts"
+        "jestConfig": "apps/backend/scheduler-service/jest.config.unit.ts"
+      }
+    },
+    "integration-test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}/integration"],
+      "options": {
+        "jestConfig": "apps/backend/scheduler-service/jest.config.integration.ts"
       }
     }
   }
