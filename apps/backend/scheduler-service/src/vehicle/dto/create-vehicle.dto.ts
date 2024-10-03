@@ -1,5 +1,6 @@
 import { IsString, IsNotEmpty } from 'class-validator';
-export class CreateVehicleDto {
+import { CreateVehicleDtoConnector } from '@libs/scheduler-service-shared';
+export class CreateVehicleDto implements CreateVehicleDtoConnector {
   @IsString()
   @IsNotEmpty()
   type: string;

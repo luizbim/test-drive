@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@libs/scheduler-service-shared": [
+        "libs/scheduler-service-shared/src/index.ts"
+      ],
       "docker-build": ["tools/docker-build/src/index.ts"]
     }
   },

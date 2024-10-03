@@ -34,6 +34,8 @@ export class VehicleService {
     vehicle.id = vehicle.id || uuid();
     await this.vehicleRepository.save(vehicle);
 
+    await this.cacheManager.del(`vehicle:findAll`);
+
     return vehicle;
   }
 
@@ -94,6 +96,7 @@ export class VehicleService {
 
         // purging the cache for the updated vehicle keeping the findAll cache
         await this.cacheManager.del(`vehicle:findOne:${id}`);
+        await this.cacheManager.del(`vehicle:findAll`);
 
         return await transactionalEntityManager.findOne(Vehicle, {
           where: { id },
@@ -115,6 +118,7 @@ export class VehicleService {
         }
 
         await entityManager.remove(vehicle);
+        await this.cacheManager.del(`vehicle:findAll`);
       }
     );
   }
