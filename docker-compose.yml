@@ -1,0 +1,25 @@
+services:
+  db:
+    container_name: db
+    image: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: test-drive-scheduler
+      POSTGRES_USER: bananas
+      POSTGRES_PASSWORD: strawberries
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4
+    restart: always
+    ports:
+      - '8888:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: testdrive@example.com
+      PGADMIN_DEFAULT_PASSWORD: strawberries
+networks:
+  default:
+    name: test-drive-scheduler
+    driver: bridge

@@ -33,8 +33,40 @@
       }
     }
   },
+  "release": {
+    "projects": ["apps/**", "!*-e2e/**"],
+    "projectsRelationship": "independent",
+    "changelog": {
+      "projectChangelogs": {
+        "createRelease": "github"
+      }
+    },
+    "version": {
+      "conventionalCommits": true,
+      "preVersionCommand": "npx nx run-many -t build",
+      "generatorOptions": {
+        "fallbackCurrentVersionResolver": "disk"
+      }
+    }
+  },
   "nxCloudAccessToken": "NmYxNWYzM2UtZTdlNC00Njc2LTg2ZDktYjJiOTgwZDZjYTlmfHJlYWQtd3JpdGU=",
-  "plugins": ["docker-build"],
+  "plugins": [
+    "docker-build",
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview"
+      }
+    },
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "eslint:lint"
+      }
+    }
+  ],
   "targetDefaults": {
     "@nx/js:swc": {
       "cache": true,

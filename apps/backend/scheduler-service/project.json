@@ -1,0 +1,38 @@
+{
+  "name": "scheduler-service",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/backend/scheduler-service/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "scheduler-service:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "scheduler-service:build:development"
+        },
+        "production": {
+          "buildTarget": "scheduler-service:build:production"
+        }
+      }
+    },
+    "unit-test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}/unit"],
+      "options": {
+        "jestConfig": "apps/backend/scheduler-service/jest.config.unit.ts"
+      }
+    },
+    "integration-test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}/integration"],
+      "options": {
+        "jestConfig": "apps/backend/scheduler-service/jest.config.integration.ts"
+      }
+    }
+  }
+}
