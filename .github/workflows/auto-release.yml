@@ -37,6 +37,12 @@ jobs:
         with:
           main-branch-name: main
 
+      - name: 'Setup Git'
+        run: |
+          git config --global user.name "${{ vars.GH_USER_NAME }}"
+          git config --global user.email "${{ vars.GH_USER_EMAIL }}"
+          git fetch
+
       - name: Cache node modules
         id: cache-node-modules
         uses: actions/cache@v4
