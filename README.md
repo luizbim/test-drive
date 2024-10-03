@@ -14,7 +14,7 @@ Below the reasons why choosing these technologies:
 - **Postgres:** The database used for this project, very well stablished and reliable.
 - **Github Actions:** The CI built in github tool that provides a perfect integration between your repository and the pipeline execution.
 - **Docker & Docker Compose:** The containerization environment used to pack both applications into deployable applications.
-- **Extra(Auth0):** I have added an integration with Auth0 to show how to integrate it with the frontend. *Not integrated with the backend yet*
+- **Extra(Auth0):** I have added an integration with Auth0 to show how to integrate it with the frontend. _Not integrated with the backend yet_
 
 ## Requirements
 
@@ -28,7 +28,7 @@ Below the reasons why choosing these technologies:
 #### Steps
 
 1. Clone the Repo: `git clone git@github.com:luizbim/test-drive.git` OR `git clone https://github.com/luizbim/test-drive.git`
-2. Move to inside the folder  `cd test-drive`
+2. Move to inside the folder `cd test-drive`
 3. Install all the dependencies `npm i`
 4. Run the deployment script `./deploy-local`.sh
 5. The application should start soon. You can access through http://localhost:4200
@@ -38,7 +38,7 @@ Below the reasons why choosing these technologies:
 #### Setting up the stack
 
 1. Clone the Repo: `git clone git@github.com:luizbim/test-drive.git` OR `git clone https://github.com/luizbim/test-drive.git`
-2. Move to inside the folder  `cd test-drive`
+2. Move to inside the folder `cd test-drive`
 3. Install all the dependencies `npm i`
 4. Start the local database using the docker compose `docker compose down && docker compose up -d`
 
@@ -58,6 +58,14 @@ This application use continuous integration to generate a new version of docker 
 
 1. To build the NodeJS code you should use the nx target `nx run-many --all --target=build`
 2. Then from the root folder run the docker build `docker buildx build -f ./apps/[project-path]/Dockerfile .` (Considering you have buildx installed and configured)
+
+## Continuous Integration
+
+Three pipelines have been configured to this repo.
+
+1. PR Check - Checking the health of the PR that are created/updated
+2. Auto Release - Detects the changes done using conventional commits to automatically bump versions
+3. Auto Publish - Detects new github releases and create the docker images of the apps associated with the release
 
 ## The Application
 
