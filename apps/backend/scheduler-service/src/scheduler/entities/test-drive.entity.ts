@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Vehicle } from './vehicle.entity';
+import { Vehicle } from '../../vehicle/entities/vehicle.entity';
 
 @Entity()
 export class TestDrive {
@@ -21,6 +21,8 @@ export class TestDrive {
   @Column()
   customerEmail: string;
 
-  @ManyToOne(() => Vehicle, (vehicle) => vehicle.testDrives)
+  @ManyToOne(() => Vehicle, (vehicle) => vehicle.testDrives, {
+    onDelete: 'CASCADE',
+  })
   vehicle: Vehicle;
 }

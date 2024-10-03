@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { TestDrive } from './test-drive.entity';
+import { TestDrive } from '../../scheduler/entities/test-drive.entity';
 
 @Entity()
 export class Vehicle {
@@ -12,6 +12,9 @@ export class Vehicle {
   @Column()
   location: string;
 
-  @OneToMany(() => TestDrive, (testDrive) => testDrive.vehicle)
+  @OneToMany(() => TestDrive, (testDrive) => testDrive.vehicle, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   testDrives: TestDrive[];
 }

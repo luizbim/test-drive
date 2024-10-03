@@ -2,16 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { SchedulerService } from './scheduler.service';
-import { Vehicle } from './entities/vehicle.entity';
+import { Vehicle } from '../vehicle/entities/vehicle.entity';
 import { TestDrive } from './entities/test-drive.entity';
 import { Repository, EntityManager, EntityTarget, DeepPartial } from 'typeorm';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { mock } from 'node:test';
 
 describe('SchedulerService', () => {
   let service: SchedulerService;
   let vehicleRepository: jest.Mocked<Repository<Vehicle>>;
   let testDriveRepository: jest.Mocked<Repository<TestDrive>>;
-  let cacheManager: any;
   let entityManager: jest.Mocked<EntityManager>;
 
   beforeEach(async () => {
@@ -45,6 +45,7 @@ describe('SchedulerService', () => {
           useValue: {
             transaction: jest.fn(),
             findOne: jest.fn(),
+            find: jest.fn(),
             create: jest.fn(),
             save: jest.fn(),
           },
@@ -59,7 +60,6 @@ describe('SchedulerService', () => {
     testDriveRepository = module.get(
       getRepositoryToken(TestDrive)
     ) as jest.Mocked<Repository<TestDrive>>;
-    cacheManager = module.get(CACHE_MANAGER);
     entityManager = module.get(EntityManager) as jest.Mocked<EntityManager>;
   });
 
@@ -153,6 +153,7 @@ describe('SchedulerService', () => {
 
       entityManager.save.mockResolvedValue(mockTestDrive);
       entityManager.findOne.mockResolvedValue(mockVehicle);
+      entityManager.find.mockResolvedValue([]);
       const createMock = jest.fn(
         (entityClass: EntityTarget<any>, plainObject?: DeepPartial<any>) => {
           if (Array.isArray(plainObject)) {
@@ -165,7 +166,7 @@ describe('SchedulerService', () => {
       entityManager.create = createMock as any;
       const result = await service.scheduleTestDrive({
         vehicleId: '1',
-        startDateTime: new Date().toISOString(),
+        startDateTime: fiveMinInFuture.toISOString(),
         durationMins: 45,
         customerName: 'John Doe',
         customerPhone: '1234567890',

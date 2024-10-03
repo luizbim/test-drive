@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntityManager } from 'typeorm';
-import { Vehicle } from './entities/vehicle.entity';
+import { Vehicle } from '../vehicle/entities/vehicle.entity';
 import { TestDrive } from './entities/test-drive.entity';
 import { CheckAvailabilityDto } from './dto/check-availability.dto';
 import { ScheduleTestDriveDto } from './dto/schedule-test-drive.dto';
@@ -45,7 +45,6 @@ export class SchedulerService {
       this.logger.log(`Returning cached availability result for ${cacheKey}`);
       return cachedResult;
     }
-
     const { location, vehicleType, startDateTime, durationMins } =
       checkAvailabilityDto;
     const startDate = new Date(startDateTime);
@@ -160,7 +159,6 @@ export class SchedulerService {
         // Check if the vehicle exists
         const vehicle = await transactionalEntityManager.findOne(Vehicle, {
           where: { id: vehicleId },
-          relations: ['testDrives'],
           lock: { mode: 'pessimistic_write' },
         });
 
@@ -168,9 +166,17 @@ export class SchedulerService {
           this.logger.warn(`Vehicle not found: ${vehicleId}`);
           throw new NotFoundException('Vehicle not found');
         }
+        Logger.log(`Vehicle found: ${vehicleId}`);
+        const existingTestDrives = await transactionalEntityManager.find(
+          TestDrive,
+          {
+            where: { vehicle: { id: vehicleId } },
+          }
+        );
+        Logger.log(`ExistingTestDrives total: ${existingTestDrives.length}`);
 
         // Check if the vehicle is available for the requested time slot
-        const isVehicleAvailable = !vehicle.testDrives.some((testDrive) => {
+        const isVehicleAvailable = !existingTestDrives.some((testDrive) => {
           const testDriveStart = new Date(testDrive.startDateTime);
           const testDriveEnd = new Date(
             testDriveStart.getTime() + testDrive.durationMins * 60000
@@ -181,7 +187,9 @@ export class SchedulerService {
             (startDate <= testDriveStart && endDate >= testDriveEnd)
           );
         });
-
+        Logger.log(
+          `Vehicle is ${isVehicleAvailable ? 'available' : 'not available'}`
+        );
         if (!isVehicleAvailable) {
           this.logger.warn(
             `Vehicle ${vehicleId} is not available for the requested time slot: ${startDate} to ${endDate}`
@@ -200,7 +208,7 @@ export class SchedulerService {
           customerEmail,
           vehicle,
         });
-        console.log(newTestDrive);
+
         const savedTestDrive = await transactionalEntityManager.save(
           newTestDrive
         );
