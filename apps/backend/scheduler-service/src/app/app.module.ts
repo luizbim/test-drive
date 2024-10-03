@@ -10,11 +10,11 @@ import { Vehicle } from '../vehicle/entities/vehicle.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'bananas',
-      password: 'strawberries',
-      database: 'test-drive-scheduler',
+      host: process.env.DATABASE_HOST,
+      port: parseInt(process.env.DATABASE_PORT || '5432', 10),
+      username: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
       entities: [Vehicle, TestDrive],
       synchronize: true,
     }),

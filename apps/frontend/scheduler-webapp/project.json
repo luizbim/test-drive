@@ -5,11 +5,11 @@
   "projectType": "application",
   "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+    "build": {
       "options": {
-        "jestConfig": "apps/frontend/scheduler-webapp/jest.config.ts"
+        "assets": [
+          "apps/frontend/scheduler-webapp/src/docker/nginx/default.conf"
+        ]
       }
     }
   }
