@@ -1,6 +1,6 @@
 import { IsString, IsDateString, IsNumber } from 'class-validator';
-
-export class CheckAvailabilityDto {
+import { CheckAvailabilityDtoConnector } from '@libs/scheduler-service-shared';
+export class CheckAvailabilityDto implements CheckAvailabilityDtoConnector {
   @IsString()
   location: string;
 

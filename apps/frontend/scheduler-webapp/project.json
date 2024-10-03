@@ -1,0 +1,16 @@
+{
+  "name": "scheduler-webapp",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/frontend/scheduler-webapp//src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/frontend/scheduler-webapp/jest.config.ts"
+      }
+    }
+  }
+}
