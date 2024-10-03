@@ -20,6 +20,13 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     steps:
+      # Asserting the Github Token
+      - name: GITHUB_TOKEN
+        if: env.GITHUB_TOKEN == ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "GITHUB_TOKEN=${GITHUB_TOKEN}" >> $GITHUB_ENV
+
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
